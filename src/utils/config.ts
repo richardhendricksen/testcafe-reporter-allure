@@ -26,8 +26,15 @@ const defaultReporterConfig = {
   LABEL: {
     ISSUE: 'JIRA Issue',
     FLAKY: 'Flaky test',
-    SCREENSHOT_MANUAL: 'Screenshot taken manually',
-    SCREENSHOT_ON_FAIL: 'Screenshot taken on fail',
+    SCREENSHOTS: {
+      ON_FAIL: 'Screenshot taken on fail',
+      MANUAL: 'Screenshot taken manually',
+      BASED_ON_PATH: [
+        { regex: '/baseline/', label: 'Baseline' },
+        { regex: '/actual/', label: 'Actual' },
+        { regex: '/diff/', label: 'Diff' },
+      ],
+    },
     DEFAULT_STEP_NAME: 'Test Step',
   },
 };

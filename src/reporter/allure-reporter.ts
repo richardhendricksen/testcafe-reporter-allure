@@ -213,9 +213,18 @@ export default class AllureReporter {
     if (screenshot.screenshotPath && fs.existsSync(screenshot.screenshotPath)) {
       let screenshotName: string;
       if (screenshot.takenOnFail) {
-        screenshotName = reporterConfig.LABEL.SCREENSHOT_ON_FAIL;
+        screenshotName = reporterConfig.LABEL.SCREENSHOTS.ON_FAIL;
       } else {
-        screenshotName = reporterConfig.LABEL.SCREENSHOT_MANUAL;
+        screenshotName = reporterConfig.LABEL.SCREENSHOTS.MANUAL;
+      }
+
+      // Rename screenshots based on path
+      if (reporterConfig.LABEL.SCREENSHOTS.BASED_ON_PATH.length > 0) {
+        reporterConfig.LABEL.SCREENSHOTS.BASED_ON_PATH.forEach(({ regex, label }) => {
+          if (screenshot.screenshotPath.match(new RegExp(regex, 'i'))) {
+            screenshotName = label;
+          }
+        });
       }
 
       // Add the useragent data to the screenshots to differentiate between browsers within the tests.

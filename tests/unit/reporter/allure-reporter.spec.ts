@@ -462,6 +462,22 @@ describe('Allure reporter - Helper Functions', () => {
     expect(mockTestAddAttachment).toBeCalledWith('Screenshot taken manually', ContentType.PNG, 'filename.png');
     expect(mockTestAddAttachment).toBeCalledWith('Screenshot taken on fail', ContentType.PNG, 'filename.png');
   });
+  it('Should set correct label for screenshots if it matches regex', () => {
+    jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+    jest.spyOn(fs, 'readFileSync').mockReturnValue('');
+
+    const testScreenshotManual: Screenshot = { screenshotPath: '/baseLine/testPathOnManual', takenOnFail: false };
+    const testScreenshotOnFail: Screenshot = { screenshotPath: '/Actual/testPathOnFail', takenOnFail: true };
+    const testScreenshots: Screenshot[] = [testScreenshotManual, testScreenshotOnFail];
+    const testRunInfo: TestRunInfo = { screenshots: testScreenshots };
+    const reporter: AllureReporter = new AllureReporter();
+    // @ts-ignore
+    reporter.addScreenshotAttachments(mockAllureTest, testRunInfo);
+
+    expect(mockTestAddAttachment).toBeCalledTimes(2);
+    expect(mockTestAddAttachment).toBeCalledWith('Baseline', ContentType.PNG, 'filename.png');
+    expect(mockTestAddAttachment).toBeCalledWith('Actual', ContentType.PNG, 'filename.png');
+  });
   it('Should add screenshots to an ended test with steps', () => {
     const testScreenshotManual: Screenshot = { screenshotPath: 'testPathOnManual', takenOnFail: false };
     const testScreenshotOnFail: Screenshot = { screenshotPath: 'testPathOnFail', takenOnFail: true };
