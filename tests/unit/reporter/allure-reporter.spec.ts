@@ -478,6 +478,34 @@ describe('Allure reporter - Helper Functions', () => {
     expect(mockTestAddAttachment).toBeCalledWith('Baseline', ContentType.PNG, 'filename.png');
     expect(mockTestAddAttachment).toBeCalledWith('Actual', ContentType.PNG, 'filename.png');
   });
+  it('Should add quarantine attempt number if it is not the first attempt', () => {
+    jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+    jest.spyOn(fs, 'readFileSync').mockReturnValue('');
+
+    const testScreenshotManual: Screenshot = {
+      screenshotPath: 'testPathOnManual',
+      takenOnFail: false,
+      quarantineAttempt: 1,
+    };
+    const testScreenshotOnFail: Screenshot = {
+      screenshotPath: 'testPathOnFail',
+      takenOnFail: true,
+      quarantineAttempt: 2,
+    };
+    const testScreenshots: Screenshot[] = [testScreenshotManual, testScreenshotOnFail];
+    const testRunInfo: TestRunInfo = { screenshots: testScreenshots };
+    const reporter: AllureReporter = new AllureReporter();
+    // @ts-ignore
+    reporter.addScreenshotAttachments(mockAllureTest, testRunInfo);
+
+    expect(mockTestAddAttachment).toBeCalledTimes(2);
+    expect(mockTestAddAttachment).toBeCalledWith('Screenshot taken manually', ContentType.PNG, 'filename.png');
+    expect(mockTestAddAttachment).toBeCalledWith(
+      'Screenshot taken on fail - attempt 2',
+      ContentType.PNG,
+      'filename.png',
+    );
+  });
   it('Should add screenshots to an ended test with steps', () => {
     const testScreenshotManual: Screenshot = { screenshotPath: 'testPathOnManual', takenOnFail: false };
     const testScreenshotOnFail: Screenshot = { screenshotPath: 'testPathOnFail', takenOnFail: true };

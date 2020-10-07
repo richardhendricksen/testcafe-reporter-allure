@@ -227,6 +227,11 @@ export default class AllureReporter {
         });
       }
 
+      // Add attempt number if it's not the first attempt
+      if (screenshot.quarantineAttempt && screenshot.quarantineAttempt !== 1) {
+        screenshotName = `${screenshotName} - attempt ${screenshot.quarantineAttempt}`;
+      }
+
       // Add the useragent data to the screenshots to differentiate between browsers within the tests.
       if (this.userAgents && this.userAgents.length > 1 && screenshot.userAgent) {
         screenshotName = `${screenshotName} - ${screenshot.userAgent}`;
