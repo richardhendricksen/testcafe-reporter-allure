@@ -116,7 +116,7 @@ export default class AllureReporter {
         testDetails = _this.formatError(error);
 
         if (error.userAgent) {
-          testDetails = addNewLine(testDetails, `User Agent(s): ${error.userAgent}`);
+          currentTest.addParameter('User Agent', error.userAgent);
         }
       });
     } else {
