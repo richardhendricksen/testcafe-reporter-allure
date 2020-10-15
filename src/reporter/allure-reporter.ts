@@ -85,7 +85,7 @@ export default class AllureReporter {
     this.setCurrentTest(name, currentTest);
   }
 
-  public endTest(name: string, testRunInfo: TestRunInfo, meta: object): void {
+  public endTest(name: string, testRunInfo: TestRunInfo, meta: object, _this: any): void {
     let currentTest = this.getCurrentTest(name);
 
     // If no currentTest exists create a new one
@@ -113,17 +113,8 @@ export default class AllureReporter {
           testMessages = addNewLine(testMessages, error.errMsg);
         }
 
-        // TODO: Add detailed error stacktrace
-        // How to convert CallSiteRecord to stacktrace?
-        const callSite = error.callsite;
-        if (callSite) {
-          if (callSite.filename) {
-            testDetails = addNewLine(testDetails, `File name: ${callSite.filename}`);
-          }
-          if (callSite.lineNum) {
-            testDetails = addNewLine(testDetails, `Line number: ${callSite.lineNum}`);
-          }
-        }
+        testDetails = _this.formatError(error);
+
         if (error.userAgent) {
           testDetails = addNewLine(testDetails, `User Agent(s): ${error.userAgent}`);
         }
